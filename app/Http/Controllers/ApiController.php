@@ -7,16 +7,17 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class ApiController
 {
     /**
-     * @param  array<mixed>  $data
      * @param  array<string, mixed>  $meta
      */
-    protected function respondSuccess(array $data = [], string $message = 'Success', int $code = Response::HTTP_OK, array $meta = []): JsonResponse
+    protected function respondSuccess(JsonResource|ResourceCollection $data, string $message = 'Success', int $code = Response::HTTP_OK, array $meta = []): JsonResponse
     {
         $response = [
             'success' => true,
@@ -69,10 +70,7 @@ abstract class ApiController
         return new Response(null, $code);
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     */
-    protected function respondCreated(array $data = [], string $message = 'Created', int $code = Response::HTTP_CREATED): Response
+    protected function respondCreated(JsonResource|ResourceCollection $data, string $message = 'Created', int $code = Response::HTTP_CREATED): Response
     {
         return $this->respondSuccess($data, $message, $code);
     }
@@ -80,9 +78,8 @@ abstract class ApiController
     /**
      * @param  LengthAwarePaginator<int, array<string, mixed>>  $paginator
      */
-    protected function respondWithPagination(LengthAwarePaginator $paginator, string $message = 'Success'): Response
+    protected function respondWithPagination(LengthAwarePaginator $paginator, ResourceCollection $data, string $message = 'Success'): Response
     {
-        $data = $paginator->items();
         $meta = [
             'pagination' => [
                 'total' => $paginator->total(),

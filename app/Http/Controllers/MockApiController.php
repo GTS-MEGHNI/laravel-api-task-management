@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 final class MockApiController extends ApiController
 {
     public function testSuccess(): Response
     {
-        return $this->respondSuccess();
+        $data = User::query()->firstOrFail()->toResource();
+
+        return $this->respondSuccess($data);
     }
 
     public function testError(): Response
@@ -46,19 +49,25 @@ final class MockApiController extends ApiController
 
     public function testCreated(): Response
     {
-        return $this->respondCreated();
+        $data = User::query()->firstOrFail()->toResource();
+
+        return $this->respondCreated($data);
     }
 
+    /**
+     * @throws Throwable
+     */
     public function testWithPagination(): Response
     {
-        $paginator = new LengthAwarePaginator([], 0, 10);
+        $paginator = User::query()->paginate(10);
+        $data = $paginator->toResourceCollection();
 
-        return $this->respondWithPagination($paginator);
+        return $this->respondWithPagination($paginator, $data);
     }
 
     public function testValidationErrors(): Response
     {
-        return $this->respondValidationErrors([]);
+        return $this->respondValidationErrors();
     }
 
     public function testMethodNotAllowed(): Response
