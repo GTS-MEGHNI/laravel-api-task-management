@@ -88,6 +88,10 @@ final class ApiResponse
     }
 
     /**
+     * @template TKey of array-key
+     * @template TValue
+     *
+     * @param  LengthAwarePaginator<TKey, TValue>  $paginator
      * @param  ResourceCollection|array<string, mixed>  $data
      */
     public static function withPagination(
