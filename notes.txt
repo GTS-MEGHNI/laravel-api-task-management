@@ -1,0 +1,246 @@
+====================================================
+🧱 TASK MANAGEMENT API PROJECT - NOTES
+====================================================
+
+This document summarizes the architecture, requirements, models,
+relationships, and API endpoints for the Task Management API project
+built using the Laravel API Starter Kit.
+
+----------------------------------------------------
+1️⃣ PROJECT OVERVIEW
+----------------------------------------------------
+Goal:
+    Build a modular and scalable Task Management REST API.
+    Users can create teams, manage projects, assign tasks,
+    add comments, and track progress with notifications and
+    activity logs.
+
+Tech Stack:
+    - Laravel 12.33 (API mode)
+    - PHP 8.4
+    - MySQL
+    - JSON API responses (standardized via ApiResponse class)
+    - Versioned API routes (v1)
+
+Design Patterns:
+    - Repository pattern (data layer)
+    - Service layer (business logic)
+    - Observer pattern (model lifecycle)
+    - Event / Listener pattern (domain events)
+    - Notification system (database + optional mail)
+
+----------------------------------------------------
+2️⃣ MODELS & SCHEMA
+----------------------------------------------------
+
+🧍‍♂️ User
+----------------------------------------------------
+- id (uuid, pk)
+- name (string)
+- email (string, unique)
+- password (string)
+- avatar (string, nullable)
+- email_verified_at (timestamp, nullable)
+- created_at / updated_at
+
+Relationships:
+- hasMany(Project)
+- hasMany(Task, as assignee)
+- belongsToMany(Team)
+- hasMany(Comment)
+- hasMany(ActivityLog, as causer)
+
+----------------------------------------------------
+👥 Team
+----------------------------------------------------
+- id (uuid, pk)
+- name (string)
+- owner_id (uuid, FK users.id)
+- created_at / updated_at
+
+Pivot: team_user
+- team_id (uuid)
+- user_id (uuid)
+- role (string)
+- timestamps
+
+Relationships:
+- belongsTo(User, owner)
+- belongsToMany(User)
+- hasMany(Project)
+
+----------------------------------------------------
+📁 Project
+----------------------------------------------------
+- id (uuid, pk)
+- team_id (uuid, FK teams.id, nullable)
+- owner_id (uuid, FK users.id)
+- name (string)
+- slug (string, unique)
+- description (text, nullable)
+- status (enum: active, archived)
+- starts_at (date, nullable)
+- ends_at (date, nullable)
+- created_at / updated_at
+
+Relationships:
+- belongsTo(User, owner)
+- belongsTo(Team)
+- hasMany(Task)
+- morphMany(ActivityLog, subject)
+
+----------------------------------------------------
+✅ Task
+----------------------------------------------------
+- id (uuid, pk)
+- project_id (uuid, FK projects.id)
+- assignee_id (uuid, FK users.id, nullable)
+- title (string)
+- description (text, nullable)
+- status (enum: pending, in_progress, completed)
+- priority (enum: low, medium, high)
+- due_date (date, nullable)
+- completed_at (timestamp, nullable)
+- created_at / updated_at
+
+Relationships:
+- belongsTo(Project)
+- belongsTo(User, assignee)
+- hasMany(Comment)
+- morphMany(ActivityLog, subject)
+
+----------------------------------------------------
+💬 Comment
+----------------------------------------------------
+- id (uuid, pk)
+- task_id (uuid, FK tasks.id)
+- user_id (uuid, FK users.id)
+- body (text)
+- created_at / updated_at
+
+Relationships:
+- belongsTo(Task)
+- belongsTo(User)
+
+----------------------------------------------------
+🧾 ActivityLog
+----------------------------------------------------
+- id (uuid, pk)
+- causer_id (uuid, FK users.id, nullable)
+- subject_id (uuid)
+- subject_type (string)
+- action (string)
+- properties (json)
+- created_at / updated_at
+
+Relationships:
+- morphTo(subject)
+- belongsTo(User, causer)
+
+----------------------------------------------------
+3️⃣ CORE RELATIONSHIPS SUMMARY
+----------------------------------------------------
+User → hasMany → Project
+User → hasMany → Task (as assignee)
+User → belongsToMany → Team
+Team → hasMany → Project
+Project → hasMany → Task
+Task → hasMany → Comment
+Task, Project → morphMany → ActivityLog
+User → hasMany → ActivityLog (as causer)
+
+----------------------------------------------------
+4️⃣ ROUTES (API V1)
+----------------------------------------------------
+Base Prefix: /api/v1
+
+AUTH
+----------------------------------------------------
+POST   /auth/register        → register new user
+POST   /auth/login           → user login
+POST   /auth/logout          → logout current user
+GET    /auth/me              → get current user profile
+
+USERS
+----------------------------------------------------
+GET    /users                → list users
+GET    /users/{id}           → get single user
+PUT    /users/{id}           → update user
+
+TEAMS
+----------------------------------------------------
+GET    /teams                → list teams
+POST   /teams                → create new team
+GET    /teams/{id}           → show team
+PUT    /teams/{id}           → update team
+DELETE /teams/{id}           → delete team
+POST   /teams/{id}/members   → add member to team
+DELETE /teams/{id}/members/{user_id} → remove member
+
+PROJECTS
+----------------------------------------------------
+GET    /projects             → list all projects
+POST   /projects             → create project
+GET    /projects/{id}        → show project
+PUT    /projects/{id}        → update project
+DELETE /projects/{id}        → delete project
+
+TASKS
+----------------------------------------------------
+GET    /projects/{project_id}/tasks       → list tasks
+POST   /projects/{project_id}/tasks       → create task
+GET    /tasks/{id}                        → show task
+PUT    /tasks/{id}                        → update task
+DELETE /tasks/{id}                        → delete task
+POST   /tasks/{id}/complete               → mark task as complete
+
+COMMENTS
+----------------------------------------------------
+GET    /tasks/{task_id}/comments          → list comments
+POST   /tasks/{task_id}/comments          → add comment
+DELETE /comments/{id}                     → delete comment
+
+ACTIVITY LOGS
+----------------------------------------------------
+GET    /activity                          → list recent activities
+GET    /activity/{id}                     → show specific activity
+
+----------------------------------------------------
+5️⃣ DESIGN PATTERNS & CONVENTIONS
+----------------------------------------------------
+- Controllers → delegate to Service classes.
+- Services → handle business rules and validation.
+- Repositories → encapsulate all database logic.
+- Observers → handle model lifecycle events (created, updated, deleted).
+- Events / Listeners → handle domain-level actions and notifications.
+- Responses → standardized via App\Http\Responses\ApiResponse.
+
+----------------------------------------------------
+6️⃣ DEVELOPER WORKFLOW
+----------------------------------------------------
+Lint & Format:
+    composer run lint
+    → runs Rector and Pint for code cleanup
+
+Static Analysis:
+    composer run test
+    → clears config + runs PHPStan
+
+Commit Checklist:
+    1. composer list
+    2. composer run lint
+    3. composer run test
+    4. run all feature tests before pushing
+
+----------------------------------------------------
+7️⃣ FUTURE EXTENSIONS
+----------------------------------------------------
+- Task attachments (files)
+- Tagging system (tags, taggables)
+- WebSocket notifications
+- Activity feed UI (frontend integration)
+- Role-based permissions (per team/project)
+
+====================================================
+END OF NOTES
+====================================================
