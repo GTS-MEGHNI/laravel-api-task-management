@@ -16,6 +16,9 @@ final class Team extends Model
     /** @use HasFactory<TeamFactory> */
     use HasFactory;
 
+    /**
+     * @return BelongsToMany<User, $this>
+     */
     public function users(): BelongsToMany
     {
         return $this
