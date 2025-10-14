@@ -6,6 +6,7 @@ namespace Database\Factories;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
+use App\Models\Comment;
 use App\Models\Task;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -34,5 +35,16 @@ final class TaskFactory extends Factory
                 :
                 null,
         ];
+    }
+
+    public function configure(): self
+    {
+        return $this->afterCreating(function (Task $task): void {
+            $userId = $task->project()->first()->team()->first()->users()->first()->id;
+            Comment::factory()->count(5)->create([
+                'task_id' => $task->id,
+                'user_id' => $userId,
+            ]);
+        });
     }
 }
