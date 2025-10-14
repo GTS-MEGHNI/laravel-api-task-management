@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property-read  int $id
+ * @property-read  Team $team
  */
 #[UseFactory(ProjectFactory::class)]
 final class Project extends Model

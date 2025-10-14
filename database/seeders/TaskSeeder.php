@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Task;
 use Illuminate\Database\Seeder;
 
-final class UserSeeder extends Seeder
+final class TaskSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $count = config('seeders.users', 10);
-        User::factory()->count($count)->create();
+        $count = config('seeders.tasks') ?? 10;
+        Task::factory()->count($count)->create();
     }
 }

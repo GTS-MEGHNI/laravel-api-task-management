@@ -30,7 +30,8 @@ final class TeamFactory extends Factory
     public function configure(): self
     {
         return $this->afterCreating(function (Team $team): void {
-            $users = User::factory()->count(5)->create();
+            $count = config('seeders.team_members', 5);
+            $users = User::factory()->count($count)->create();
 
             $admin = $users->random();
 

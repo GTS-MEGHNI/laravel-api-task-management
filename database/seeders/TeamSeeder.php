@@ -14,6 +14,7 @@ final class TeamSeeder extends Seeder
      */
     public function run(): void
     {
-        Team::factory()->count(10)->create();
+        $count = config('seeders.teams', 10);
+        Team::factory()->count($count)->create();
     }
 }

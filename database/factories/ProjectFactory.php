@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Enums\ProjectStatus;
 use App\Models\Project;
-use App\Models\Task;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,12 +23,16 @@ final class ProjectFactory extends Factory
     public function definition(): array
     {
         $status = $this->faker->randomElement(ProjectStatus::cases());
+        /** @var Team $team */
+        $team = Team::factory()->create();
+        /** @var User $owner */
+        $owner = $team->users()->first();
 
         return [
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
-            'team_id' => Team::factory()->create(),
-            'owner_id' => User::factory()->create(),
+            'team_id' => $team->id,
+            'owner_id' => $owner->id,
             'slug' => $this->faker->slug(),
             'status' => $this->faker->randomElement(ProjectStatus::cases()),
             'started_at' => $this->faker->dateTimeBetween('-1 year'),
@@ -37,18 +40,5 @@ final class ProjectFactory extends Factory
                 $this->faker->dateTimeBetween('now', '+1 year')
                 : null,
         ];
-    }
-
-    public function configure(): self
-    {
-        return $this->afterCreating(function (Project $project): void {
-            $users = $project->team()->first()->users()->pluck('users.id');
-            foreach (range(1, 5) as $ignored) {
-                Task::factory()->create([
-                    'project_id' => $project->id,
-                    'assignee_id' => $users->random(),
-                ]);
-            }
-        });
     }
 }

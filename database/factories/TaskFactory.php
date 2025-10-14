@@ -6,8 +6,9 @@ namespace Database\Factories;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
-use App\Models\Comment;
+use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,8 +24,14 @@ final class TaskFactory extends Factory
     public function definition(): array
     {
         $status = $this->faker->randomElement(TaskStatus::cases());
+        /** @var Project $project */
+        $project = Project::factory()->create();
+        /** @var User $assignee */
+        $assignee = $project->team->users()->first();
 
         return [
+            'project_id' => $project->id,
+            'assignee_id' => $assignee->id,
             'title' => $this->faker->sentence(),
             'description' => $this->faker->text(),
             'status' => $status,
@@ -35,16 +42,5 @@ final class TaskFactory extends Factory
                 :
                 null,
         ];
-    }
-
-    public function configure(): self
-    {
-        return $this->afterCreating(function (Task $task): void {
-            $userId = $task->project()->first()->team()->first()->users()->first()->id;
-            Comment::factory()->count(5)->create([
-                'task_id' => $task->id,
-                'user_id' => $userId,
-            ]);
-        });
     }
 }

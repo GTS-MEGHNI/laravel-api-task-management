@@ -18,6 +18,8 @@ final class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TeamSeeder::class,
             ProjectSeeder::class,
+            TaskSeeder::class,
+            CommentSeeder::class,
         ]);
     }
 }
