@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Builder\UserBuilder;
+use App\Concerns\HasSearch;
+use App\Contracts\Searchable;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\UsersCollection;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\UseEloquentBuilder;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
-use Illuminate\Database\Eloquent\Attributes\UseResourceCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -26,11 +27,12 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  */
 #[UseFactory(UserFactory::class)]
 #[UseResource(UserResource::class)]
-#[UseResourceCollection(UsersCollection::class)]
-final class User extends Authenticatable implements HasMedia
+#[UseEloquentBuilder(UserBuilder::class)]
+final class User extends Authenticatable implements HasMedia, Searchable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, InteractsWithMedia, Notifiable;
+    /** @use HasFactory<UserFactory>
+     * @use HasSearch<User> **/
+    use HasApiTokens, HasFactory, HasSearch, InteractsWithMedia, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +54,22 @@ final class User extends Authenticatable implements HasMedia
         'password',
         'remember_token',
     ];
+
+    public function getSearchableFields(): array
+    {
+        return [
+            'name',
+            'email',
+        ];
+    }
+
+    /**
+     * @return UserBuilder<User>
+     */
+    public function newEloquentBuilder($query): UserBuilder
+    {
+        return new UserBuilder($query);
+    }
 
     /**
      * Get the attributes that should be cast.
