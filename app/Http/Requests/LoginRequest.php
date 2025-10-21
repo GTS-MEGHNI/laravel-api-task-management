@@ -8,7 +8,6 @@ use App\Contracts\DtoTransformable;
 use App\Dtos\LoginDto;
 use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Validation\Rule;
 
 /**
  * @implements DtoTransformable<LoginDto>
@@ -32,8 +31,8 @@ final class LoginRequest extends BaseRequest implements DtoTransformable
     {
         /** @var array<string, list<ValidationRule|string>> $rules */
         $rules = [
-            'email' => ['required', 'email', Rule::exists(User::class, 'email')],
-            'password' => ['required', 'string', 'min:8', 'max:255'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
         ];
 
         return $rules;

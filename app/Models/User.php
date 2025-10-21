@@ -20,6 +20,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property-read int $id
+ * @property string $password
  */
 #[UseFactory(UserFactory::class)]
 #[UseResource(UserResource::class)]
