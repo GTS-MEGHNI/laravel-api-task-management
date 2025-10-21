@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Builder\UserBuilder;
-use App\Concerns\HasSearch;
-use App\Contracts\Searchable;
 use App\Http\Resources\UserResource;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\UseEloquentBuilder;
@@ -28,11 +26,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 #[UseFactory(UserFactory::class)]
 #[UseResource(UserResource::class)]
 #[UseEloquentBuilder(UserBuilder::class)]
-final class User extends Authenticatable implements HasMedia, Searchable
+final class User extends Authenticatable implements HasMedia
 {
-    /** @use HasFactory<UserFactory>
-     * @use HasSearch<User> **/
-    use HasApiTokens, HasFactory, HasSearch, InteractsWithMedia, Notifiable;
+    /** @use HasFactory<UserFactory> **/
+    use HasApiTokens, HasFactory, InteractsWithMedia, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -54,14 +51,6 @@ final class User extends Authenticatable implements HasMedia, Searchable
         'password',
         'remember_token',
     ];
-
-    public function getSearchableFields(): array
-    {
-        return [
-            'name',
-            'email',
-        ];
-    }
 
     /**
      * @return UserBuilder<User>

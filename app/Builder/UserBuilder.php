@@ -19,11 +19,22 @@ final class UserBuilder extends Builder
      */
     public function search(string $searchText): Builder
     {
-        $searchParams = new User()->getSearchableFields();
+        $searchParams = $this->getSearchableFields();
         foreach ($searchParams as $field) {
             $this->orWhere($field, 'LIKE', "%$searchText%");
         }
 
         return $this;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function getSearchableFields(): array
+    {
+        return [
+            'name',
+            'email',
+        ];
     }
 }
