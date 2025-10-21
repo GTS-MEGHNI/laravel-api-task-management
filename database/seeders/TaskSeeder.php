@@ -14,7 +14,7 @@ final class TaskSeeder extends Seeder
      */
     public function run(): void
     {
-        $count = config('seeders.tasks') ?? 10;
+        $count = config('seeders.tasks', 10);
         Task::factory()->count($count)->create();
     }
 }
