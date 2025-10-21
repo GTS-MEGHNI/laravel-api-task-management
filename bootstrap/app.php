@@ -31,7 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         $exceptions->render(fn (ThrottleRequestsException $e): JsonResponse => ApiResponse::tooManyRequests());
         $exceptions->render(fn (NotFoundHttpException $e): JsonResponse => ApiResponse::notFound());
-        $exceptions->render(fn (AuthenticationException $e): JsonResponse => ApiResponse::notFound());
+        $exceptions->render(fn (AuthenticationException $e): JsonResponse => ApiResponse::unauthorized());
         $exceptions->render(fn (ValidationException $e): JsonResponse => ApiResponse::validationErrors(
             errors: $e->errors(),
             message: $e->getMessage(),
