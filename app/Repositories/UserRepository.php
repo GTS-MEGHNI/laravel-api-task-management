@@ -22,10 +22,10 @@ final class UserRepository implements UserRepositoryInterface
      */
     public function getPaginated(FilterDto $filterDto): LengthAwarePaginator
     {
-        /** @var UserBuilder<User> $query */
+        /** @var UserBuilder $query */
         $query = User::query();
 
-        if ($filterDto->search !== null && $filterDto->search !== '' && $filterDto->search !== '0') {
+        if ($filterDto->search !== null && $filterDto->search !== '') {
             $query->search($filterDto->search);
         }
 

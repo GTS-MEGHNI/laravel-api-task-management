@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Builder\UserBuilder;
+use App\Contracts\Searchable;
 use App\Http\Resources\UserResource;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\UseEloquentBuilder;
@@ -26,7 +27,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 #[UseFactory(UserFactory::class)]
 #[UseResource(UserResource::class)]
 #[UseEloquentBuilder(UserBuilder::class)]
-final class User extends Authenticatable implements HasMedia
+final class User extends Authenticatable implements HasMedia, Searchable
 {
     /** @use HasFactory<UserFactory> **/
     use HasApiTokens, HasFactory, InteractsWithMedia, Notifiable;
@@ -52,12 +53,17 @@ final class User extends Authenticatable implements HasMedia
         'remember_token',
     ];
 
-    /**
-     * @return UserBuilder<User>
-     */
     public function newEloquentBuilder($query): UserBuilder
     {
         return new UserBuilder($query);
+    }
+
+    public function getSearchableFields(): array
+    {
+        return [
+            'email',
+            'name',
+        ];
     }
 
     /**
