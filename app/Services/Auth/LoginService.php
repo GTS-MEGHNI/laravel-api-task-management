@@ -31,6 +31,14 @@ final readonly class LoginService
                 code: Response::HTTP_UNAUTHORIZED
             );
         }
+        if (! $user->hasVerifiedEmail()) {
+            $message = __('auth.email_not_verified');
+            assert(is_string($message));
+            throw new LoginFailedException(
+                message: $message,
+                code: Response::HTTP_UNAUTHORIZED
+            );
+        }
 
         $token = $user->createToken('bearer_token')->plainTextToken;
 

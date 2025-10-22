@@ -14,6 +14,9 @@ abstract class BaseException extends Exception
     {
         $code = $this->getCode();
 
-        return ApiResponse::error($this->message, $code);
+        return ApiResponse::error($this->message, $code, [
+            'trace' => $this->getTrace(),
+            'message' => $this->getMessage(),
+        ]);
     }
 }

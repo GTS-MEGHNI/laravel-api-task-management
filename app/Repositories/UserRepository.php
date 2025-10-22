@@ -7,8 +7,10 @@ namespace App\Repositories;
 use App\Builder\UserBuilder;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Dtos\FilterDto;
+use App\Dtos\RegisterDto;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Hash;
 
 final class UserRepository implements UserRepositoryInterface
 {
@@ -34,5 +36,15 @@ final class UserRepository implements UserRepositoryInterface
 
         // Paginate
         return $query->paginate($filterDto->perPage);
+    }
+
+    public function create(RegisterDto $data): User
+    {
+        return User::query()->create([
+            'email' => $data->email,
+            'phone' => $data->phone,
+            'password' => Hash::make($data->password),
+            'name' => $data->name,
+        ]);
     }
 }

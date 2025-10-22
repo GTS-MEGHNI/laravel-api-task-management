@@ -8,6 +8,7 @@ use App\Builder\UserBuilder;
 use App\Contracts\Searchable;
 use App\Http\Resources\UserResource;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\UseEloquentBuilder;
 use Illuminate\Database\Eloquent\Attributes\UseFactory;
 use Illuminate\Database\Eloquent\Attributes\UseResource;
@@ -27,7 +28,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 #[UseFactory(UserFactory::class)]
 #[UseResource(UserResource::class)]
 #[UseEloquentBuilder(UserBuilder::class)]
-final class User extends Authenticatable implements HasMedia, Searchable
+final class User extends Authenticatable implements HasMedia, MustVerifyEmail, Searchable
 {
     /** @use HasFactory<UserFactory> **/
     use HasApiTokens, HasFactory, InteractsWithMedia, Notifiable;
@@ -40,6 +41,7 @@ final class User extends Authenticatable implements HasMedia, Searchable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
     ];
 
