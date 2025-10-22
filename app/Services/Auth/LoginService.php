@@ -28,7 +28,7 @@ final readonly class LoginService
             assert(is_string($message));
             throw new LoginFailedException(
                 message: $message,
-                code: Response::HTTP_BAD_REQUEST
+                code: Response::HTTP_UNAUTHORIZED
             );
         }
 
