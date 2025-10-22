@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\V1\UserController;
+use Illuminate\Support\Facades\Route;
 
-Illuminate\Support\Facades\Route::prefix('users')->middleware('auth:sanctum')->group(function (): void {
-    Illuminate\Support\Facades\Route::get('/', [UserController::class, 'index']);
+Route::prefix('users')->middleware('auth:sanctum')->group(function (): void {
+    Route::get('/', [UserController::class, 'index']);
+    Route::get('/{user}', [UserController::class, 'show']);
 });
