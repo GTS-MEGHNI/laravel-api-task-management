@@ -30,16 +30,16 @@ final class UserIndexRequest extends BaseRequest implements DtoTransformable
         /**
          * @var array{
          *     search: string|null,
-         *     sortBy: string,
-         *     sortDirection: string,
-         *     perPage: int
+         *     sortBy: string|null,
+         *     sortDirection: string|null,
+         *     perPage: int|null
          * } $validated
          */
         $validated = $this->validated();
-        $search = $validated['search'];
-        $sortBy = $validated['sortBy'];
-        $sortDirection = $validated['sortDirection'];
-        $perPage = $validated['perPage'];
+        $search = $validated['search'] ?? null;
+        $sortBy = $validated['sortBy'] ?? 'created_at';
+        $sortDirection = $validated['sortDirection'] ?? 'asc';
+        $perPage = $validated['perPage'] ?? 10;
 
         return new FilterDto(
             search: $search,
