@@ -6,23 +6,25 @@ namespace App\Services\Auth;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Dtos\RegisterDto;
-use App\Events\UserRegistered;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
 final readonly class RegisterService
 {
-    public function __construct(private UserRepositoryInterface $userRepository) {}
+    public function __construct(
+        private UserRepositoryInterface $userRepository,
+        private OtpService $otpService,
+    ) {}
 
     /**
      * @throws Throwable
      */
-    public function register(RegisterDto $data): void
+    public function register(RegisterDto $data): string
     {
-        DB::transaction(function () use ($data): void {
-            $user = $this->userRepository->create($data);
+        /** @var User $user */
+        $user = DB::transaction(fn (): User => $this->userRepository->create($data));
 
-            UserRegistered::dispatch($user);
-        });
+        return $this->otpService->getOtpToken($user);
     }
 }

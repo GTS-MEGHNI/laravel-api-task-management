@@ -15,13 +15,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 final readonly class AuthController
 {
+    public function __construct(private LoginService $loginService) {}
+
     /**
      * @throws LoginFailedException
      */
-    public function login(LoginRequest $request, LoginService $service): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $payload = $request->toDto();
-        $token = $service->execute($payload);
+        $token = $this->loginService->execute($payload);
 
         return ApiResponse::success($token);
     }

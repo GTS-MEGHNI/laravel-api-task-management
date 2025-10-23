@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Contracts\OtpChannelInterface;
+use App\Contracts\Repositories\OtpRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Models\User;
+use App\Repositories\CacheOtpRepository;
 use App\Repositories\UserRepository;
+use App\Services\Auth\OtpChannels\SmsOtpChannel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +24,8 @@ final class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
+        $this->app->bind(OtpRepositoryInterface::class, CacheOtpRepository::class);
+        $this->app->bind(OtpChannelInterface::class, SmsOtpChannel::class);
     }
 
     /**
