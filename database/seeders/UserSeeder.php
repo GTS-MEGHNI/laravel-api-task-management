@@ -14,6 +14,7 @@ final class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        /** @var int $count */
         $count = config('seeders.users', 10);
         User::factory()->count($count)->create();
     }

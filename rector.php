@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
-use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
@@ -24,6 +23,9 @@ try {
             LaravelSetList::LARAVEL_IF_HELPERS,
             LaravelSetList::LARAVEL_LEGACY_FACTORIES_TO_CLASSES,
         ])
+        ->withImportNames(
+            removeUnusedImports: true,
+        )
         ->withComposerBased(laravel: true)
         ->withCache(
             cacheDirectory: '/tmp/rector',
@@ -36,6 +38,7 @@ try {
             __DIR__.'/database',
             __DIR__.'/public',
             __DIR__.'/routes',
+            __DIR__.'/tests',
         ])
         ->withSkip([
             AddOverrideAttributeToOverriddenMethodsRector::class,
@@ -46,9 +49,8 @@ try {
             typeDeclarations: true,
             privatization: true,
             earlyReturn: true,
-            strictBooleans: true,
         )
         ->withPhpSets();
-} catch (InvalidConfigurationException $e) {
+} catch (Rector\Exception\Configuration\InvalidConfigurationException $e) {
 
 }

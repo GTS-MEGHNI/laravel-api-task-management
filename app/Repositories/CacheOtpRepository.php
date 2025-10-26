@@ -8,8 +8,8 @@ use App\Contracts\Repositories\OtpRepositoryInterface;
 use App\Enums\OtpChannel;
 use App\Enums\OtpContext;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Date;
 
 final class CacheOtpRepository implements OtpRepositoryInterface
 {
@@ -49,10 +49,10 @@ final class CacheOtpRepository implements OtpRepositoryInterface
             return null;
         }
 
-        $expiresAt = Carbon::createFromTimestamp($data['expires_at']);
+        $expiresAt = Date::createFromTimestamp($data['expires_at']);
 
         // Single boolean for all validation
-        $isValid = Carbon::now()->lessThanOrEqualTo($expiresAt)
+        $isValid = Date::now()->lessThanOrEqualTo($expiresAt)
             && ($data['context'] === $context->value)
             && hash_equals((string) $data['otp'], $otp);
 

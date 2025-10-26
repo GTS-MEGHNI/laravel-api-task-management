@@ -6,7 +6,6 @@ namespace App\Http\Requests;
 
 use App\Contracts\DtoTransformable;
 use App\Dtos\LoginDto;
-use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 /**

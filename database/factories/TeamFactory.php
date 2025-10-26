@@ -7,6 +7,7 @@ namespace Database\Factories;
 use App\Enums\TeamRole;
 use App\Models\Team;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -30,7 +31,9 @@ final class TeamFactory extends Factory
     public function configure(): self
     {
         return $this->afterCreating(function (Team $team): void {
+            /** @var int $count */
             $count = config('seeders.team_members', 5);
+            /** @var Collection<int, User> $users */
             $users = User::factory()->count($count)->create();
 
             $admin = $users->random();
@@ -44,7 +47,7 @@ final class TeamFactory extends Factory
                     'created_at' => now(),
                     'updated_at' => now(),
                 ],
-            ])->toArray();
+            ])->all();
 
             $team->users()->attach($pivotData);
         });

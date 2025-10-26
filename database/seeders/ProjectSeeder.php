@@ -14,6 +14,7 @@ final class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
+        /** @var int $count */
         $count = config('seeders.projects', 10);
         Project::factory()->count($count)->create();
     }

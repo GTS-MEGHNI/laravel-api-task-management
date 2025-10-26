@@ -14,6 +14,7 @@ final class CommentSeeder extends Seeder
      */
     public function run(): void
     {
+        /** @var int $count */
         $count = config('seeders.comments', 10);
         Comment::factory()->count($count)->create();
     }
