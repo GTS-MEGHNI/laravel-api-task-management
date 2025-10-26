@@ -11,7 +11,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 abstract class BaseRequest extends FormRequest
 {
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(Validator $validator): void
     {
         /** @var array<string, mixed> $errors */
         $errors = $validator->errors()->toArray();

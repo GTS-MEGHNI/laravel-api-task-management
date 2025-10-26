@@ -56,7 +56,7 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail, S
         'remember_token',
     ];
 
-    public function newEloquentBuilder($query): UserBuilder
+    public function newEloquentBuilder(mixed $query): UserBuilder
     {
         return new UserBuilder($query);
     }

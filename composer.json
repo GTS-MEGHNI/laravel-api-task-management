@@ -28,6 +28,7 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.1",
+        "pestphp/pest-plugin-type-coverage": "^4.0",
         "phpstan/phpstan": "^2.1",
         "rector/rector": "^2.2"
     },
@@ -48,12 +49,8 @@
             "vendor/bin/rector",
             "pint --parallel"
         ],
-        "test:type-coverage": "pest --type-coverage --min=100",
-        "test:lint": [
-            "pint --parallel --test",
-            "rector --dry-run"
-        ],
         "test": [
+            "./vendor/bin/pest --type-coverage --compact --min=100",
             "phpstan"
         ],
         "setup": [
