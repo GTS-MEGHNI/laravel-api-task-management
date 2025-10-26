@@ -47,4 +47,9 @@ final class UserRepository implements UserRepositoryInterface
             'name' => $data->name,
         ]);
     }
+
+    public function findById(int $id): ?User
+    {
+        return User::query()->where(['id' => $id])->first();
+    }
 }

@@ -17,6 +17,8 @@ return [
 
     'registration_failed' => 'Registration failed. Please try again.',
     'email_not_verified' => 'Your email address is not verified',
+    'invalid_otp' => 'Invalid OTP',
+    'already_requested' => 'OTP already sent. Please wait before requesting a new one.',
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',

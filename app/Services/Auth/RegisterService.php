@@ -6,6 +6,7 @@ namespace App\Services\Auth;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Dtos\RegisterDto;
+use App\Enums\OtpContext;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -25,6 +26,6 @@ final readonly class RegisterService
         /** @var User $user */
         $user = DB::transaction(fn (): User => $this->userRepository->create($data));
 
-        return $this->otpService->getOtpToken($user);
+        return $this->otpService->generateOtp($user, OtpContext::AccountActivation);
     }
 }

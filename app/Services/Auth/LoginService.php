@@ -24,16 +24,16 @@ final readonly class LoginService
     {
         $user = $this->userRepository->findByEmail($payload->email);
         if (! $user instanceof User || ! Hash::check($payload->password, $user->password)) {
+            /** @var string $message */
             $message = __('auth.failed');
-            assert(is_string($message));
             throw new LoginFailedException(
                 message: $message,
                 code: Response::HTTP_UNAUTHORIZED
             );
         }
         if (! $user->hasVerifiedEmail()) {
+            /** @var string $message */
             $message = __('auth.email_not_verified');
-            assert(is_string($message));
             throw new LoginFailedException(
                 message: $message,
                 code: Response::HTTP_UNAUTHORIZED
