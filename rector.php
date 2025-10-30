@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
+use Rector\Exception\Configuration\InvalidConfigurationException;
 use Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector;
 use RectorLaravel\Set\LaravelSetList;
 use RectorLaravel\Set\LaravelSetProvider;
@@ -48,9 +49,9 @@ try {
             codeQuality: true,
             typeDeclarations: true,
             privatization: true,
-            earlyReturn: true,
+            earlyReturn: true
         )
         ->withPhpSets();
-} catch (Rector\Exception\Configuration\InvalidConfigurationException $e) {
+} catch (InvalidConfigurationException $e) {
 
 }
